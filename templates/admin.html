@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BORDADOS G&C — Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0f0f0f;color:#eee;display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:#1a1a1a;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:20px 16px;border-bottom:1px solid #2a2a2a}
+.sidebar-header h2{color:#f0a500;font-size:16px;font-weight:800}
+.sidebar-header p{color:#666;font-size:11px;margin-top:2px}
+.nav-item{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;
+           color:#aaa;transition:all 0.2s;border-left:3px solid transparent}
+.nav-item:hover{background:#222;color:#fff}
+.nav-item.active{background:#222;color:#f0a500;border-left-color:#f0a500}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid #2a2a2a}
+.user-info{font-size:12px;color:#888;margin-bottom:10px}
+.user-info strong{color:#f0a500;display:block;font-size:13px}
+.btn-logout{width:100%;padding:8px;background:#2a2a2a;border:1px solid #333;border-radius:6px;
+            color:#aaa;cursor:pointer;font-size:12px;transition:all 0.2s}
+.btn-logout:hover{background:#e74c3c;color:#fff;border-color:#e74c3c}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:14px 20px;background:#141414;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;gap:10px}
+.topbar h3{font-size:15px;font-weight:600;color:#fff}
+.badge{background:#f0a500;color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.badge.verde{background:#27ae60}
+
+/* CHAT AREA */
+.chat-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-thumb{background:#333;border-radius:4px}
+.msg{display:flex;gap:10px;max-width:80%}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg.bot{align-self:flex-start}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.avatar.bot-av{background:linear-gradient(135deg,#c87800,#f0a500)}
+.avatar.user-av{background:linear-gradient(135deg,#1a6ba0,#2980b9)}
+.bubble{padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55;word-wrap:break-word}
+.msg.bot  .bubble{background:#1e1e1e;border-radius:4px 14px 14px 14px;border:1px solid #2a2a2a}
+.msg.user .bubble{background:linear-gradient(135deg,#1a6ba0,#2980b9);border-radius:14px 4px 14px 14px}
+.typing{align-self:flex-start;background:#1e1e1e;border:1px solid #2a2a2a;padding:10px 16px;
+        border-radius:4px 14px 14px 14px;display:none;gap:5px;align-items:center}
+.typing.on{display:flex}
+.dot{width:7px;height:7px;background:#f0a500;border-radius:50%;animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* INPUT */
+.input-area{padding:14px 20px;background:#141414;border-top:1px solid #2a2a2a;display:flex;gap:10px;align-items:flex-end}
+textarea{flex:1;background:#1e1e1e;border:1px solid #333;border-radius:10px;padding:10px 14px;color:#eee;
+         font-size:13px;resize:none;min-height:42px;max-height:120px;outline:none;font-family:inherit;line-height:1.4}
+textarea:focus{border-color:#f0a500}
+.btn-send{width:42px;height:42px;background:linear-gradient(135deg,#c87800,#f0a500);border:none;border-radius:50%;
+          color:#fff;cursor:pointer;font-size:18px;flex-shrink:0;transition:transform 0.2s}
+.btn-send:hover{transform:scale(1.08)}
+.btn-send:disabled{opacity:0.4;transform:none;cursor:not-allowed}
+
+/* FACTURA TAB */
+.factura-wrap{flex:1;overflow-y:auto;padding:24px;display:none;flex-direction:column;gap:16px}
+.factura-wrap.on{display:flex}
+.drop-zone{border:2px dashed #333;border-radius:12px;padding:40px;text-align:center;cursor:pointer;
+           transition:all 0.2s;background:#1a1a1a}
+.drop-zone:hover,.drop-zone.over{border-color:#f0a500;background:#1e1800}
+.drop-zone p{color:#666;font-size:13px;margin-top:8px}
+.drop-zone .big{font-size:40px;margin-bottom:8px}
+.preview-img{max-width:100%;max-height:300px;border-radius:8px;border:1px solid #333;display:none;margin:0 auto}
+.factura-msg{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:16px;
+             font-size:13px;line-height:1.6;white-space:pre-wrap;display:none}
+.btn-analizar{padding:12px 24px;background:linear-gradient(135deg,#c87800,#f0a500);border:none;border-radius:8px;
+              color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s;align-self:flex-start}
+.btn-analizar:hover{opacity:0.85}
+.btn-analizar:disabled{opacity:0.4;cursor:not-allowed}
+
+/* QUICK ACTIONS */
+.quick{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 12px}
+.qbtn{background:#1e1e1e;border:1px solid #333;color:#aaa;padding:6px 12px;border-radius:20px;
+      font-size:11px;cursor:pointer;transition:all 0.2s}
+.qbtn:hover{border-color:#f0a500;color:#f0a500}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h2>🧵 BORDADOS G&amp;C</h2>
+    <p>Panel Administrador</p>
+  </div>
+  <div class="nav-item active" onclick="showTab('chat')" id="nav-chat">
+    <span class="icon">💬</span> Chat IA
+  </div>
+  <div class="nav-item" onclick="showTab('factura')" id="nav-factura">
+    <span class="icon">🧾</span> Analizar Factura
+  </div>
+  <div class="nav-item" onclick="sendMsg('Lista todos los pedidos con sus saldos pendientes')">
+    <span class="icon">📦</span> Ver Pedidos
+  </div>
+  <div class="nav-item" onclick="sendMsg('Muestra el inventario completo con alertas de stock bajo')">
+    <span class="icon">📋</span> Inventario
+  </div>
+  <div class="nav-item" onclick="sendMsg('Muestra todos los precios de servicios de bordado')">
+    <span class="icon">💰</span> Precios
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <strong id="nombre-user">Administrador</strong>
+      <span>Rol: Admin</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">⏻ Cerrar sesión</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h3 id="tab-title">Chat con Agente IA</h3>
+    <span class="badge">Admin</span>
+    <span class="badge verde" id="status-badge">● Conectado</span>
+  </div>
+
+  <!-- TAB: CHAT -->
+  <div class="chat-wrap" id="tab-chat">
+    <div class="messages" id="messages">
+      <div class="msg bot">
+        <div class="avatar bot-av">🧵</div>
+        <div class="bubble">
+          Hola <strong id="saludo-nombre"></strong>. Soy tu asistente IA con acceso completo al sistema.<br><br>
+          Puedo ayudarte con pedidos, inventario, cotizaciones y más. ¿Qué necesitas?
+        </div>
+      </div>
+      <div class="typing" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+    <div class="quick">
+      <button class="qbtn" onclick="sendMsg('¿Hay pedidos con saldo pendiente?')">💰 Saldos pendientes</button>
+      <button class="qbtn" onclick="sendMsg('¿Qué materiales tienen stock bajo?')">⚠️ Stock bajo</button>
+      <button class="qbtn" onclick="sendMsg('Registra un nuevo pedido')">➕ Nuevo pedido</button>
+      <button class="qbtn" onclick="sendMsg('Calcula una cotización para 50 polos con bordado mediano')">🧮 Cotizar</button>
+    </div>
+    <div class="input-area">
+      <textarea id="input" placeholder="Escribe aquí... (Enter para enviar, Shift+Enter para nueva línea)"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviar()}"
+                oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+      <button class="btn-send" id="btn-send" onclick="enviar()">➤</button>
+    </div>
+  </div>
+
+  <!-- TAB: FACTURA -->
+  <div class="factura-wrap" id="tab-factura">
+    <p style="color:#888;font-size:13px">Sube una foto o imagen de una factura y el agente IA extraerá automáticamente todos los datos.</p>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()"
+         ondragover="event.preventDefault();this.classList.add('over')"
+         ondragleave="this.classList.remove('over')"
+         ondrop="handleDrop(event)">
+      <div class="big">📄</div>
+      <strong style="color:#aaa">Haz clic o arrastra la imagen aquí</strong>
+      <p>Formatos: JPG, PNG, WEBP</p>
+    </div>
+    <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewFile(this)">
+    <img id="preview-img" class="preview-img">
+    <button class="btn-analizar" id="btn-analizar" onclick="analizarFactura()" disabled>🔍 Analizar Factura</button>
+    <div class="factura-msg" id="factura-result"></div>
+  </div>
+</div>
+
+<script>
+const TOKEN  = localStorage.getItem('token');
+const NOMBRE = localStorage.getItem('nombre') || 'Admin';
+if (!TOKEN) window.location.href = '/login';
+
+document.getElementById('nombre-user').textContent = NOMBRE;
+document.getElementById('saludo-nombre').textContent = NOMBRE;
+
+let sessionId = null;
+let enviando  = false;
+let archivoFactura = null;
+
+// ── Tabs ──────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  document.getElementById('tab-chat').style.display    = tab==='chat'    ? 'flex' : 'none';
+  document.getElementById('tab-factura').style.display = tab==='factura' ? 'flex' : 'none';
+  // Factura wrap needs flex direction
+  if (tab==='factura') document.getElementById('tab-factura').style.flexDirection = 'column';
+  document.getElementById('nav-chat').className    = 'nav-item' + (tab==='chat'    ? ' active' : '');
+  document.getElementById('nav-factura').className = 'nav-item' + (tab==='factura' ? ' active' : '');
+  document.getElementById('tab-title').textContent = tab==='chat' ? 'Chat con Agente IA' : 'Analizador de Facturas';
+}
+
+// ── Chat ──────────────────────────────────────────────────────────────────
+function addMsg(tipo, texto) {
+  const msgs = document.getElementById('messages');
+  const typing = document.getElementById('typing');
+  const div = document.createElement('div');
+  div.className = `msg ${tipo}`;
+  const av  = tipo==='bot' ? '🧵' : '👤';
+  const avClass = tipo==='bot' ? 'bot-av' : 'user-av';
+  div.innerHTML = `<div class="avatar ${avClass}">${av}</div><div class="bubble">${fmt(texto)}</div>`;
+  msgs.insertBefore(div, typing);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function fmt(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+           .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+           .replace(/^- (.+)$/gm,'<li>$1</li>')
+           .replace(/\n/g,'<br>');
+}
+
+async function enviar() {
+  const inp = document.getElementById('input');
+  const msg = inp.value.trim();
+  if (!msg || enviando) return;
+  inp.value = ''; inp.style.height = 'auto';
+  sendMsg(msg);
+}
+
+async function sendMsg(texto) {
+  if (enviando) return;
+  enviando = true;
+  addMsg('user', texto);
+  document.getElementById('btn-send').disabled = true;
+  document.getElementById('typing').classList.add('on');
+
+  try {
+    const res  = await fetch('/chat', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+      body: JSON.stringify({mensaje:texto, session_id:sessionId})
+    });
+    if (res.status===401) { logout(); return; }
+    if (!res.ok) {
+      const e = await res.json();
+      addMsg('bot', '⚠️ Error: ' + (e.detail||res.status));
+      return;
+    }
+    const data = await res.json();
+    sessionId  = data.session_id;
+    addMsg('bot', data.respuesta);
+  } catch(e) {
+    addMsg('bot', '⚠️ Sin conexión con el servidor.');
+  } finally {
+    enviando = false;
+    document.getElementById('btn-send').disabled = false;
+    document.getElementById('typing').classList.remove('on');
+    document.getElementById('input').focus();
+  }
+}
+
+// ── Factura ──────────────────────────────────────────────────────────────
+function previewFile(input) {
+  if (!input.files[0]) return;
+  archivoFactura = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('preview-img');
+    img.src = e.target.result; img.style.display = 'block';
+    document.getElementById('drop-zone').querySelector('.big').textContent = '✅';
+    document.getElementById('btn-analizar').disabled = false;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    document.getElementById('file-input').files = e.dataTransfer.files;
+    previewFile(document.getElementById('file-input'));
+  }
+}
+
+async function analizarFactura() {
+  if (!archivoFactura) return;
+  const btn = document.getElementById('btn-analizar');
+  const res_div = document.getElementById('factura-result');
+  btn.disabled = true; btn.textContent = '⏳ Analizando...';
+  res_div.style.display = 'none';
+
+  const fd = new FormData();
+  fd.append('imagen', archivoFactura);
+  fd.append('session_id', sessionId || '');
+
+  try {
+    const res  = await fetch('/chat/factura', {
+      method:'POST', headers:{'Authorization':'Bearer '+TOKEN}, body: fd
+    });
+    const data = await res.json();
+    if (!res.ok) { res_div.textContent = '⚠️ ' + (data.detail||'Error'); }
+    else { res_div.textContent = data.respuesta; sessionId = data.session_id; }
+    res_div.style.display = 'block';
+  } catch(e) {
+    res_div.textContent = '⚠️ Error de conexión'; res_div.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = '🔍 Analizar Factura';
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = '/login';
+}
+</script>
+</body>
+</html>

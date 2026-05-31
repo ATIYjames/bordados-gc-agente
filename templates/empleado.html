@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BORDADOS G&C — Empleado</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0a1628,#0d2137,#0a1628);
+     min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.container{width:100%;max-width:640px;background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);
+           border:1px solid rgba(41,128,185,0.3);border-radius:16px;height:88vh;max-height:720px;
+           display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.header{background:linear-gradient(135deg,#1a5276,#2980b9);padding:16px 20px;display:flex;align-items:center;gap:12px}
+.header .icon{width:42px;height:42px;background:rgba(255,255,255,0.15);border-radius:50%;
+              display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.header-info h1{font-size:16px;font-weight:700;color:#fff}
+.header-info p{font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px}
+.dot{width:8px;height:8px;background:#2ecc71;border-radius:50%;display:inline-block;margin-right:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.btn-logout{margin-left:auto;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);
+            color:#fff;padding:7px 14px;border-radius:20px;cursor:pointer;font-size:11px;transition:background 0.2s}
+.btn-logout:hover{background:rgba(231,76,60,0.6)}
+
+.messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;
+          background:rgba(0,0,0,0.15)}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-thumb{background:#2980b9;border-radius:4px}
+.msg{display:flex;gap:8px;max-width:85%;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg.bot{align-self:flex-start}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px}
+.av.bot{background:linear-gradient(135deg,#1a5276,#2980b9)}
+.av.usr{background:linear-gradient(135deg,#1e8449,#27ae60)}
+.bubble{padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.55;word-wrap:break-word;max-width:100%}
+.msg.bot .bubble{background:rgba(255,255,255,0.9);color:#2c3e50;border-radius:4px 14px 14px 14px}
+.msg.user .bubble{background:linear-gradient(135deg,#1a5276,#2980b9);color:#fff;border-radius:14px 4px 14px 14px}
+
+.welcome{text-align:center;padding:24px 16px;color:rgba(255,255,255,0.6)}
+.welcome .wi{font-size:44px;margin-bottom:10px}
+.welcome h3{color:#fff;font-size:15px;margin-bottom:6px}
+.welcome p{font-size:12px;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.chip{background:rgba(41,128,185,0.25);border:1px solid rgba(41,128,185,0.5);color:#7fb3d3;
+      padding:7px 13px;border-radius:20px;font-size:11px;cursor:pointer;transition:all 0.2s}
+.chip:hover{background:rgba(41,128,185,0.5);color:#fff}
+
+.typing{align-self:flex-start;background:rgba(255,255,255,0.9);padding:10px 14px;
+        border-radius:4px 14px 14px 14px;display:none;gap:5px;align-items:center}
+.typing.on{display:flex}
+.tdot{width:7px;height:7px;background:#2980b9;border-radius:50%;animation:td 1.2s infinite}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+.input-area{padding:12px 16px;background:rgba(0,0,0,0.2);border-top:1px solid rgba(41,128,185,0.2);display:flex;gap:8px;align-items:flex-end}
+textarea{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(41,128,185,0.3);border-radius:20px;
+         padding:10px 16px;color:#fff;font-size:13px;resize:none;min-height:42px;max-height:110px;
+         outline:none;font-family:inherit;line-height:1.4}
+textarea:focus{border-color:#2980b9}
+textarea::placeholder{color:rgba(255,255,255,0.3)}
+.btn-send{width:42px;height:42px;background:linear-gradient(135deg,#1a5276,#2980b9);border:none;
+          border-radius:50%;color:#fff;cursor:pointer;font-size:17px;flex-shrink:0;transition:transform 0.2s}
+.btn-send:hover{transform:scale(1.08)}
+.btn-send:disabled{opacity:0.4;transform:none;cursor:not-allowed}
+.footer{text-align:center;padding:6px;font-size:10px;color:rgba(255,255,255,0.25);background:rgba(0,0,0,0.2)}
+.permisos{background:rgba(41,128,185,0.1);border-radius:8px;padding:8px 12px;font-size:11px;
+           color:rgba(255,255,255,0.5);margin:0 18px 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="icon">🧵</div>
+    <div class="header-info">
+      <h1>BORDADOS G&amp;C</h1>
+      <p><span class="dot"></span>Asistente Empleado · <span id="nombre-head"></span></p>
+    </div>
+    <button class="btn-logout" onclick="logout()">Salir</button>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <div class="wi">🧵</div>
+      <h3>¡Hola, <span id="nombre-bienvenida"></span>!</h3>
+      <p>Puedo ayudarte a consultar pedidos, precios e inventario.</p>
+      <div class="chips">
+        <div class="chip" onclick="enviar('¿Cuánto cuesta bordar 30 polos?')">💰 Cotizar</div>
+        <div class="chip" onclick="enviar('Consulta el pedido P001')">📦 Ver pedido</div>
+        <div class="chip" onclick="enviar('¿Qué materiales hay disponibles?')">📋 Inventario</div>
+        <div class="chip" onclick="enviar('¿Cuáles son los tiempos de entrega?')">⏰ Tiempos</div>
+      </div>
+    </div>
+    <div class="typing" id="typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+  </div>
+
+  <div class="permisos">Solo consultas · Para registrar pedidos contacta al administrador</div>
+
+  <div class="input-area">
+    <textarea id="inp" placeholder="Escribe tu consulta..."
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviar()}"
+              oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px'"></textarea>
+    <button class="btn-send" id="btn-send" onclick="enviar()">➤</button>
+  </div>
+  <div class="footer">Azure OpenAI · GPT-4o-mini · BORDADOS G&amp;C · SENATI 2026</div>
+</div>
+
+<script>
+const TOKEN  = localStorage.getItem('token');
+const NOMBRE = localStorage.getItem('nombre') || 'Empleado';
+const ROL    = localStorage.getItem('rol');
+if (!TOKEN) window.location.href = '/login';
+if (ROL === 'admin') window.location.href = '/admin';
+
+document.getElementById('nombre-head').textContent       = NOMBRE;
+document.getElementById('nombre-bienvenida').textContent = NOMBRE;
+
+let sessionId = null, busy = false;
+
+function fmt(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+           .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+           .replace(/^- (.+)$/gm,'<li>$1</li>')
+           .replace(/\n/g,'<br>');
+}
+
+function addMsg(tipo, texto) {
+  const msgs = document.getElementById('messages');
+  const typing = document.getElementById('typing');
+  const w = document.getElementById('welcome');
+  if (w) w.style.display = 'none';
+  const d = document.createElement('div');
+  d.className = `msg ${tipo}`;
+  d.innerHTML = tipo==='bot'
+    ? `<div class="av bot">🧵</div><div class="bubble">${fmt(texto)}</div>`
+    : `<div class="av usr">👤</div><div class="bubble">${fmt(texto)}</div>`;
+  msgs.insertBefore(d, typing);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function enviar(texto) {
+  const inp = document.getElementById('inp');
+  const msg = texto || inp.value.trim();
+  if (!msg || busy) return;
+  if (!texto) { inp.value = ''; inp.style.height = 'auto'; }
+  busy = true;
+  addMsg('user', msg);
+  document.getElementById('btn-send').disabled = true;
+  document.getElementById('typing').classList.add('on');
+
+  try {
+    const res  = await fetch('/chat', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+      body: JSON.stringify({mensaje:msg, session_id:sessionId})
+    });
+    if (res.status===401) { logout(); return; }
+    const data = await res.json();
+    if (!res.ok) { addMsg('bot','⚠️ '+(data.detail||'Error del servidor')); return; }
+    sessionId = data.session_id;
+    addMsg('bot', data.respuesta);
+  } catch(e) {
+    addMsg('bot','⚠️ Sin conexión con el servidor.');
+  } finally {
+    busy = false;
+    document.getElementById('btn-send').disabled = false;
+    document.getElementById('typing').classList.remove('on');
+    document.getElementById('inp').focus();
+  }
+}
+
+function logout() { localStorage.clear(); window.location.href = '/login'; }
+</script>
+</body>
+</html>
