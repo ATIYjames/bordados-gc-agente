@@ -137,6 +137,22 @@ def limpiar(session_id: str, usuario=Depends(auth.get_current_user)):
 def estado():
     return {"estado": "activo", "modelo": config.AZURE_DEPLOYMENT, "sesiones_activas": len(sesiones)}
 
+# ── Endpoints de datos (para paneles del admin) ───────────────────────────────
+@app.get("/api/pedidos")
+def api_pedidos(usuario=Depends(auth.require_admin)):
+    rows = []
+    for p in T.PEDIDOS.values():
+        rows.append({**p, "saldo": round(p["monto_total"] - p["anticipo_pagado"], 2)})
+    return rows
+
+@app.get("/api/inventario")
+def api_inventario(usuario=Depends(auth.get_current_user)):
+    return T.INVENTARIO
+
+@app.get("/api/precios")
+def api_precios(usuario=Depends(auth.get_current_user)):
+    return T.PRECIOS
+
 # ── Páginas HTML ─────────────────────────────────────────────────────────────
 def _page(name: str) -> HTMLResponse:
     p = pathlib.Path(__file__).parent / "templates" / f"{name}.html"

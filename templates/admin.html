@@ -6,307 +6,461 @@
 <title>BORDADOS G&C — Admin</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:#0f0f0f;color:#eee;display:flex;height:100vh;overflow:hidden}
+body{font-family:'Segoe UI',sans-serif;background:#0d0d0d;color:#eee;display:flex;height:100vh;overflow:hidden}
 
-/* SIDEBAR */
-.sidebar{width:220px;background:#1a1a1a;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;flex-shrink:0}
-.sidebar-header{padding:20px 16px;border-bottom:1px solid #2a2a2a}
-.sidebar-header h2{color:#f0a500;font-size:16px;font-weight:800}
-.sidebar-header p{color:#666;font-size:11px;margin-top:2px}
-.nav-item{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;
-           color:#aaa;transition:all 0.2s;border-left:3px solid transparent}
-.nav-item:hover{background:#222;color:#fff}
-.nav-item.active{background:#222;color:#f0a500;border-left-color:#f0a500}
-.nav-item .icon{font-size:16px;width:20px;text-align:center}
-.sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid #2a2a2a}
-.user-info{font-size:12px;color:#888;margin-bottom:10px}
-.user-info strong{color:#f0a500;display:block;font-size:13px}
-.btn-logout{width:100%;padding:8px;background:#2a2a2a;border:1px solid #333;border-radius:6px;
-            color:#aaa;cursor:pointer;font-size:12px;transition:all 0.2s}
-.btn-logout:hover{background:#e74c3c;color:#fff;border-color:#e74c3c}
+/* ── SIDEBAR ── */
+.sidebar{width:210px;background:#111;border-right:1px solid #222;display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{padding:16px 14px;border-bottom:1px solid #222;display:flex;flex-direction:column;align-items:center;gap:8px}
+.sb-logo img.banner{width:100%;max-height:54px;object-fit:contain}
+.nav{flex:1;padding:8px 0}
+.ni{padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:#888;
+    transition:all 0.2s;border-left:3px solid transparent;user-select:none}
+.ni:hover{background:#1a1a1a;color:#ddd}
+.ni.on{background:#1a1a1a;color:#f0a500;border-left-color:#f0a500;font-weight:600}
+.ni img{width:18px;height:18px;object-fit:contain;opacity:0.7;filter:invert(1)}
+.ni.on img{filter:invert(70%) sepia(80%) saturate(500%) hue-rotate(10deg)}
+.sb-user{padding:14px;border-top:1px solid #222;display:flex;align-items:center;gap:10px}
+.sb-user img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #f0a500}
+.sb-user-info{flex:1;min-width:0}
+.sb-user-info strong{display:block;font-size:12px;color:#f0a500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-info span{font-size:10px;color:#555}
+.btn-logout{background:none;border:none;color:#555;cursor:pointer;font-size:16px;transition:color 0.2s;padding:4px}
+.btn-logout:hover{color:#e74c3c}
 
-/* MAIN */
+/* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{padding:14px 20px;background:#141414;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;gap:10px}
-.topbar h3{font-size:15px;font-weight:600;color:#fff}
-.badge{background:#f0a500;color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
-.badge.verde{background:#27ae60}
+.topbar{padding:12px 20px;background:#111;border-bottom:1px solid #222;display:flex;align-items:center;gap:10px}
+.topbar h3{font-size:14px;font-weight:600;color:#fff}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:#f0a500;color:#000}
+.badge.v{background:#27ae60}
+.topbar-logo{margin-right:auto;height:28px;object-fit:contain}
 
-/* CHAT AREA */
-.chat-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column}
-.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
-.messages::-webkit-scrollbar{width:4px}
-.messages::-webkit-scrollbar-thumb{background:#333;border-radius:4px}
-.msg{display:flex;gap:10px;max-width:80%}
-.msg.user{align-self:flex-end;flex-direction:row-reverse}
-.msg.bot{align-self:flex-start}
-.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.avatar.bot-av{background:linear-gradient(135deg,#c87800,#f0a500)}
-.avatar.user-av{background:linear-gradient(135deg,#1a6ba0,#2980b9)}
-.bubble{padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55;word-wrap:break-word}
-.msg.bot  .bubble{background:#1e1e1e;border-radius:4px 14px 14px 14px;border:1px solid #2a2a2a}
-.msg.user .bubble{background:linear-gradient(135deg,#1a6ba0,#2980b9);border-radius:14px 4px 14px 14px}
-.typing{align-self:flex-start;background:#1e1e1e;border:1px solid #2a2a2a;padding:10px 16px;
+/* ── TABS CONTENT ── */
+.tab{flex:1;overflow:hidden;display:none;flex-direction:column}
+.tab.on{display:flex}
+
+/* ── CHAT ── */
+.msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:11px;background:rgba(0,0,0,0.3)}
+.msgs::-webkit-scrollbar{width:4px}.msgs::-webkit-scrollbar-thumb{background:#333;border-radius:4px}
+.msg{display:flex;gap:9px;max-width:82%}
+.msg.u{align-self:flex-end;flex-direction:row-reverse}
+.msg.b{align-self:flex-start}
+.av{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0;margin-top:2px}
+.bbl{padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.55;word-wrap:break-word}
+.msg.b .bbl{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:4px 14px 14px 14px}
+.msg.u .bbl{background:linear-gradient(135deg,#c87800,#f0a500);color:#000;font-weight:500;border-radius:14px 4px 14px 14px}
+.typing{align-self:flex-start;background:#1c1c1c;border:1px solid #2a2a2a;padding:9px 14px;
         border-radius:4px 14px 14px 14px;display:none;gap:5px;align-items:center}
 .typing.on{display:flex}
-.dot{width:7px;height:7px;background:#f0a500;border-radius:50%;animation:bounce 1.2s infinite}
-.dot:nth-child(2){animation-delay:.2s}
-.dot:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-
-/* INPUT */
-.input-area{padding:14px 20px;background:#141414;border-top:1px solid #2a2a2a;display:flex;gap:10px;align-items:flex-end}
-textarea{flex:1;background:#1e1e1e;border:1px solid #333;border-radius:10px;padding:10px 14px;color:#eee;
-         font-size:13px;resize:none;min-height:42px;max-height:120px;outline:none;font-family:inherit;line-height:1.4}
+.dot{width:6px;height:6px;background:#f0a500;border-radius:50%;animation:bnc 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bnc{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.quick{display:flex;flex-wrap:wrap;gap:7px;padding:10px 18px}
+.qb{background:#1a1a1a;border:1px solid #2a2a2a;color:#888;padding:5px 12px;border-radius:16px;
+    font-size:11px;cursor:pointer;transition:all 0.2s}
+.qb:hover{border-color:#f0a500;color:#f0a500}
+.inp-area{padding:12px 18px;background:#111;border-top:1px solid #222;display:flex;gap:9px;align-items:flex-end}
+textarea{flex:1;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:9px 14px;
+         color:#eee;font-size:13px;resize:none;min-height:40px;max-height:110px;outline:none;font-family:inherit}
 textarea:focus{border-color:#f0a500}
-.btn-send{width:42px;height:42px;background:linear-gradient(135deg,#c87800,#f0a500);border:none;border-radius:50%;
-          color:#fff;cursor:pointer;font-size:18px;flex-shrink:0;transition:transform 0.2s}
+.btn-send{width:40px;height:40px;background:linear-gradient(135deg,#c87800,#f0a500);border:none;
+          border-radius:50%;color:#fff;cursor:pointer;font-size:17px;flex-shrink:0;transition:transform 0.2s}
 .btn-send:hover{transform:scale(1.08)}
-.btn-send:disabled{opacity:0.4;transform:none;cursor:not-allowed}
+.btn-send:disabled{opacity:0.35;transform:none;cursor:not-allowed}
 
-/* FACTURA TAB */
-.factura-wrap{flex:1;overflow-y:auto;padding:24px;display:none;flex-direction:column;gap:16px}
-.factura-wrap.on{display:flex}
-.drop-zone{border:2px dashed #333;border-radius:12px;padding:40px;text-align:center;cursor:pointer;
-           transition:all 0.2s;background:#1a1a1a}
-.drop-zone:hover,.drop-zone.over{border-color:#f0a500;background:#1e1800}
-.drop-zone p{color:#666;font-size:13px;margin-top:8px}
-.drop-zone .big{font-size:40px;margin-bottom:8px}
-.preview-img{max-width:100%;max-height:300px;border-radius:8px;border:1px solid #333;display:none;margin:0 auto}
-.factura-msg{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:16px;
-             font-size:13px;line-height:1.6;white-space:pre-wrap;display:none}
-.btn-analizar{padding:12px 24px;background:linear-gradient(135deg,#c87800,#f0a500);border:none;border-radius:8px;
-              color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s;align-self:flex-start}
+/* ── DATA PANELS ── */
+.panel{flex:1;overflow-y:auto;padding:20px;background:#0d0d0d}
+.panel::-webkit-scrollbar{width:4px}.panel::-webkit-scrollbar-thumb{background:#222;border-radius:4px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.panel-header h2{font-size:16px;font-weight:700;color:#fff}
+.btn-refresh{background:#1a1a1a;border:1px solid #2a2a2a;color:#888;padding:6px 14px;border-radius:8px;
+             cursor:pointer;font-size:12px;transition:all 0.2s}
+.btn-refresh:hover{border-color:#f0a500;color:#f0a500}
+
+/* Tabla de pedidos */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid #1e1e1e}
+table{width:100%;border-collapse:collapse;background:#111;font-size:12px}
+thead{background:#1a1a1a}
+thead th{padding:11px 14px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #222;white-space:nowrap}
+tbody tr{border-bottom:1px solid #161616;transition:background 0.15s}
+tbody tr:hover{background:#141414}
+tbody td{padding:10px 14px;color:#ccc;vertical-align:middle}
+.estado-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.est-verde{background:rgba(39,174,96,0.15);color:#27ae60;border:1px solid rgba(39,174,96,0.3)}
+.est-naranja{background:rgba(230,126,34,0.15);color:#e67e22;border:1px solid rgba(230,126,34,0.3)}
+.est-amarillo{background:rgba(241,196,15,0.12);color:#f1c40f;border:1px solid rgba(241,196,15,0.3)}
+.saldo-red{color:#e74c3c;font-weight:700}
+.saldo-ok{color:#27ae60;font-weight:700}
+
+/* Inventario cards */
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.inv-card{background:#111;border:1px solid #1e1e1e;border-radius:12px;padding:16px;transition:border-color 0.2s}
+.inv-card:hover{border-color:#2a2a2a}
+.inv-card h4{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px}
+.inv-card .cat{font-size:10px;color:#555;margin-bottom:12px}
+.inv-stock{font-size:28px;font-weight:800;margin-bottom:4px}
+.inv-stock.ok{color:#27ae60}
+.inv-stock.bajo{color:#e74c3c}
+.inv-unit{font-size:11px;color:#666;margin-bottom:10px}
+.progress-bar{height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.5s}
+.fill-ok{background:linear-gradient(90deg,#1e8449,#27ae60)}
+.fill-bajo{background:linear-gradient(90deg,#c0392b,#e74c3c)}
+.inv-min{font-size:10px;color:#444;margin-top:5px}
+.alerta{display:inline-block;background:rgba(231,76,60,0.15);color:#e74c3c;border:1px solid rgba(231,76,60,0.3);
+        padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px}
+
+/* Precios cards */
+.precios-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.precio-card{background:#111;border:1px solid #1e1e1e;border-radius:12px;padding:20px;
+             transition:all 0.2s;position:relative;overflow:hidden}
+.precio-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.pc-rojo::before{background:linear-gradient(90deg,#c0392b,#e74c3c)}
+.pc-naranja::before{background:linear-gradient(90deg,#c87800,#f0a500)}
+.pc-azul::before{background:linear-gradient(90deg,#1a5276,#2980b9)}
+.pc-verde::before{background:linear-gradient(90deg,#1e8449,#27ae60)}
+.precio-card:hover{border-color:#2a2a2a;transform:translateY(-2px)}
+.precio-card h4{font-size:13px;font-weight:600;color:#aaa;margin-bottom:6px}
+.precio-card .monto{font-size:30px;font-weight:800;color:#f0a500;margin-bottom:4px}
+.precio-card .monto span{font-size:14px;color:#888}
+.precio-card .desc{font-size:11px;color:#555;line-height:1.4;margin-bottom:10px}
+.precio-card .min{font-size:10px;background:#1a1a1a;border-radius:6px;padding:4px 10px;
+                  color:#666;display:inline-block}
+
+/* Facturas */
+.fact-wrap{padding:20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:16px}
+.drop-zone{border:2px dashed #2a2a2a;border-radius:12px;padding:40px;text-align:center;cursor:pointer;
+           transition:all 0.2s;background:#111}
+.drop-zone:hover,.drop-zone.ov{border-color:#f0a500;background:#1a1500}
+.drop-zone p{color:#555;font-size:12px;margin-top:6px}
+.preview-img{max-width:100%;max-height:280px;border-radius:8px;border:1px solid #222;display:none;margin:0 auto}
+.fact-result{background:#111;border:1px solid #1e1e1e;border-radius:10px;padding:16px;
+             font-size:13px;line-height:1.6;white-space:pre-wrap;display:none;color:#ccc}
+.btn-analizar{padding:11px 22px;background:linear-gradient(135deg,#c87800,#f0a500);border:none;
+              border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;
+              transition:opacity 0.2s;align-self:flex-start}
 .btn-analizar:hover{opacity:0.85}
-.btn-analizar:disabled{opacity:0.4;cursor:not-allowed}
-
-/* QUICK ACTIONS */
-.quick{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 12px}
-.qbtn{background:#1e1e1e;border:1px solid #333;color:#aaa;padding:6px 12px;border-radius:20px;
-      font-size:11px;cursor:pointer;transition:all 0.2s}
-.qbtn:hover{border-color:#f0a500;color:#f0a500}
+.btn-analizar:disabled{opacity:0.35;cursor:not-allowed}
 </style>
 </head>
 <body>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="sidebar-header">
-    <h2>🧵 BORDADOS G&amp;C</h2>
-    <p>Panel Administrador</p>
+  <div class="sb-logo">
+    <img class="banner" src="/img/Flogo.png?v=2" alt="BORDADOS G&C" onerror="this.style.display='none'">
   </div>
-  <div class="nav-item active" onclick="showTab('chat')" id="nav-chat">
-    <span class="icon">💬</span> Chat IA
+  <div class="nav">
+    <div class="ni on"  id="ni-chat"      onclick="tab('chat')">      <img src="/img/Blogo.png?v=2" alt="">  Chat IA</div>
+    <div class="ni"     id="ni-pedidos"   onclick="tab('pedidos')">   <img src="/img/Blogo.png?v=2" alt="">  Pedidos</div>
+    <div class="ni"     id="ni-inventario"onclick="tab('inventario')"><img src="/img/Blogo.png?v=2" alt="">  Inventario</div>
+    <div class="ni"     id="ni-precios"   onclick="tab('precios')">   <img src="/img/Blogo.png?v=2" alt="">  Precios</div>
+    <div class="ni"     id="ni-factura"   onclick="tab('factura')">   <img src="/img/Blogo.png?v=2" alt="">  Analizar Factura</div>
   </div>
-  <div class="nav-item" onclick="showTab('factura')" id="nav-factura">
-    <span class="icon">🧾</span> Analizar Factura
-  </div>
-  <div class="nav-item" onclick="sendMsg('Lista todos los pedidos con sus saldos pendientes')">
-    <span class="icon">📦</span> Ver Pedidos
-  </div>
-  <div class="nav-item" onclick="sendMsg('Muestra el inventario completo con alertas de stock bajo')">
-    <span class="icon">📋</span> Inventario
-  </div>
-  <div class="nav-item" onclick="sendMsg('Muestra todos los precios de servicios de bordado')">
-    <span class="icon">💰</span> Precios
-  </div>
-  <div class="sidebar-footer">
-    <div class="user-info">
-      <strong id="nombre-user">Administrador</strong>
-      <span>Rol: Admin</span>
+  <div class="sb-user">
+    <img src="/img/avatar1.png?v=2" alt="avatar" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><circle cx=%2220%22 cy=%2220%22 r=%2220%22 fill=%22%23f0a500%22/></svg>'">
+    <div class="sb-user-info">
+      <strong id="sb-nombre">Admin</strong>
+      <span>Administrador</span>
     </div>
-    <button class="btn-logout" onclick="logout()">⏻ Cerrar sesión</button>
+    <button class="btn-logout" title="Cerrar sesión" onclick="logout()">⏻</button>
   </div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <h3 id="tab-title">Chat con Agente IA</h3>
+    <img class="topbar-logo" src="/img/Blogo.png?v=2" alt="" style="height:28px;object-fit:contain" onerror="this.style.display='none'">
+    <h3 id="tab-titulo">Chat con Agente IA</h3>
     <span class="badge">Admin</span>
-    <span class="badge verde" id="status-badge">● Conectado</span>
+    <span class="badge v">● Azure OpenAI</span>
   </div>
 
-  <!-- TAB: CHAT -->
-  <div class="chat-wrap" id="tab-chat">
-    <div class="messages" id="messages">
-      <div class="msg bot">
-        <div class="avatar bot-av">🧵</div>
-        <div class="bubble">
-          Hola <strong id="saludo-nombre"></strong>. Soy tu asistente IA con acceso completo al sistema.<br><br>
-          Puedo ayudarte con pedidos, inventario, cotizaciones y más. ¿Qué necesitas?
-        </div>
+  <!-- TAB CHAT -->
+  <div class="tab on" id="tab-chat" style="flex-direction:column">
+    <div class="msgs" id="msgs">
+      <div class="msg b">
+        <img class="av" src="/img/Blogo.png?v=2" alt="IA" onerror="this.style.fontSize='18px';this.outerHTML='<div class=av style=background:#f0a500;display:flex;align-items:center;justify-content:center>🧵</div>'">
+        <div class="bbl">Hola <strong id="chat-nombre"></strong>. Soy tu asistente IA con acceso completo.<br>Usa los paneles del menú para ver datos, o escríbeme directamente.</div>
       </div>
       <div class="typing" id="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
     </div>
     <div class="quick">
-      <button class="qbtn" onclick="sendMsg('¿Hay pedidos con saldo pendiente?')">💰 Saldos pendientes</button>
-      <button class="qbtn" onclick="sendMsg('¿Qué materiales tienen stock bajo?')">⚠️ Stock bajo</button>
-      <button class="qbtn" onclick="sendMsg('Registra un nuevo pedido')">➕ Nuevo pedido</button>
-      <button class="qbtn" onclick="sendMsg('Calcula una cotización para 50 polos con bordado mediano')">🧮 Cotizar</button>
+      <div class="qb" onclick="send('Registra un nuevo pedido para un cliente')">➕ Registrar pedido</div>
+      <div class="qb" onclick="send('¿Qué materiales tienen stock bajo?')">⚠️ Alertas stock</div>
+      <div class="qb" onclick="send('Calcula cotización: 50 polos bordado mediano, urgente')">🧮 Cotizar urgente</div>
+      <div class="qb" onclick="send('Dame un resumen del negocio hoy')">📊 Resumen</div>
     </div>
-    <div class="input-area">
-      <textarea id="input" placeholder="Escribe aquí... (Enter para enviar, Shift+Enter para nueva línea)"
-                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviar()}"
-                oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
-      <button class="btn-send" id="btn-send" onclick="enviar()">➤</button>
+    <div class="inp-area">
+      <textarea id="inp" placeholder="Escribe aquí... (Enter = enviar)"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px'"></textarea>
+      <button class="btn-send" id="btn-send" onclick="send()">➤</button>
     </div>
   </div>
 
-  <!-- TAB: FACTURA -->
-  <div class="factura-wrap" id="tab-factura">
-    <p style="color:#888;font-size:13px">Sube una foto o imagen de una factura y el agente IA extraerá automáticamente todos los datos.</p>
-    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()"
-         ondragover="event.preventDefault();this.classList.add('over')"
-         ondragleave="this.classList.remove('over')"
-         ondrop="handleDrop(event)">
-      <div class="big">📄</div>
-      <strong style="color:#aaa">Haz clic o arrastra la imagen aquí</strong>
-      <p>Formatos: JPG, PNG, WEBP</p>
+  <!-- TAB PEDIDOS -->
+  <div class="tab" id="tab-pedidos" style="flex-direction:column">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>📦 Pedidos activos</h2>
+        <button class="btn-refresh" onclick="loadPedidos()">↻ Actualizar</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>ID</th><th>Cliente</th><th>Descripción</th><th>Estado</th>
+            <th>Entrega</th><th>Total</th><th>Anticipo</th><th>Saldo</th>
+          </tr></thead>
+          <tbody id="tbody-pedidos"><tr><td colspan="8" style="text-align:center;padding:30px;color:#555">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="pedidos-total" style="margin-top:14px;font-size:13px;color:#888"></div>
     </div>
-    <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewFile(this)">
-    <img id="preview-img" class="preview-img">
-    <button class="btn-analizar" id="btn-analizar" onclick="analizarFactura()" disabled>🔍 Analizar Factura</button>
-    <div class="factura-msg" id="factura-result"></div>
+  </div>
+
+  <!-- TAB INVENTARIO -->
+  <div class="tab" id="tab-inventario" style="flex-direction:column">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>📋 Inventario de materiales</h2>
+        <button class="btn-refresh" onclick="loadInventario()">↻ Actualizar</button>
+      </div>
+      <div class="inv-grid" id="inv-grid"><div style="color:#555;font-size:13px">Cargando...</div></div>
+    </div>
+  </div>
+
+  <!-- TAB PRECIOS -->
+  <div class="tab" id="tab-precios" style="flex-direction:column">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>💰 Lista de precios</h2>
+        <span style="font-size:12px;color:#555">50% anticipo · Urgente +30%</span>
+      </div>
+      <div class="precios-grid" id="precios-grid"><div style="color:#555;font-size:13px">Cargando...</div></div>
+      <div style="margin-top:20px;background:#111;border:1px solid #1e1e1e;border-radius:10px;padding:16px">
+        <p style="font-size:12px;color:#888;font-weight:600;margin-bottom:8px">⏰ TIEMPOS DE ENTREGA</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;font-size:12px;color:#666">
+          <div>🔹 1–20 piezas: <strong style="color:#aaa">3–5 días</strong></div>
+          <div>🔹 21–100 piezas: <strong style="color:#aaa">5–10 días</strong></div>
+          <div>🔹 +100 piezas: <strong style="color:#aaa">10–20 días</strong></div>
+          <div>⚡ Urgente (1–2 días): <strong style="color:#f0a500">+30%</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB FACTURA -->
+  <div class="tab" id="tab-factura" style="flex-direction:column">
+    <div class="fact-wrap">
+      <p style="color:#666;font-size:13px">Sube una foto de factura — el IA extrae proveedor, fecha, monto e ítems automáticamente.</p>
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('fi').click()"
+           ondragover="event.preventDefault();this.classList.add('ov')"
+           ondragleave="this.classList.remove('ov')"
+           ondrop="onDrop(event)">
+        <div style="font-size:38px">📄</div>
+        <strong style="color:#888;font-size:13px">Haz clic o arrastra la imagen aquí</strong>
+        <p>JPG · PNG · WEBP</p>
+      </div>
+      <input type="file" id="fi" accept="image/*" style="display:none" onchange="previewImg(this)">
+      <img id="prev" class="preview-img">
+      <button class="btn-analizar" id="btn-analizar" onclick="analizarFactura()" disabled>🔍 Analizar Factura</button>
+      <div class="fact-result" id="fact-result"></div>
+    </div>
   </div>
 </div>
 
 <script>
 const TOKEN  = localStorage.getItem('token');
 const NOMBRE = localStorage.getItem('nombre') || 'Admin';
-if (!TOKEN) window.location.href = '/login';
+if (!TOKEN) { window.location.href = '/login'; }
+document.getElementById('sb-nombre').textContent  = NOMBRE;
+document.getElementById('chat-nombre').textContent = NOMBRE;
 
-document.getElementById('nombre-user').textContent = NOMBRE;
-document.getElementById('saludo-nombre').textContent = NOMBRE;
+const TITULOS = {chat:'Chat con Agente IA', pedidos:'Pedidos', inventario:'Inventario', precios:'Precios', factura:'Analizar Factura'};
+let sessionId = null, busy = false, archivoFact = null;
 
-let sessionId = null;
-let enviando  = false;
-let archivoFactura = null;
+// ── Tabs ─────────────────────────────────────────────────────────────────
+function tab(name) {
+  ['chat','pedidos','inventario','precios','factura'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('on', t===name);
+    document.getElementById('ni-'+t).classList.toggle('on', t===name);
+  });
+  document.getElementById('tab-titulo').textContent = TITULOS[name];
+  if (name==='pedidos')    loadPedidos();
+  if (name==='inventario') loadInventario();
+  if (name==='precios')    loadPrecios();
+}
 
-// ── Tabs ──────────────────────────────────────────────────────────────────
-function showTab(tab) {
-  document.getElementById('tab-chat').style.display    = tab==='chat'    ? 'flex' : 'none';
-  document.getElementById('tab-factura').style.display = tab==='factura' ? 'flex' : 'none';
-  // Factura wrap needs flex direction
-  if (tab==='factura') document.getElementById('tab-factura').style.flexDirection = 'column';
-  document.getElementById('nav-chat').className    = 'nav-item' + (tab==='chat'    ? ' active' : '');
-  document.getElementById('nav-factura').className = 'nav-item' + (tab==='factura' ? ' active' : '');
-  document.getElementById('tab-title').textContent = tab==='chat' ? 'Chat con Agente IA' : 'Analizador de Facturas';
+// ── Pedidos ───────────────────────────────────────────────────────────────
+async function loadPedidos() {
+  const tbody = document.getElementById('tbody-pedidos');
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:#555">Cargando...</td></tr>';
+  try {
+    const res  = await apiFetch('/api/pedidos');
+    const data = await res.json();
+    let totalSaldo = 0;
+    tbody.innerHTML = data.map(p => {
+      const s = p.saldo; totalSaldo += s;
+      const estClass = p.estado.includes('Completado') ? 'est-verde' : p.estado.includes('Pendiente') ? 'est-amarillo' : 'est-naranja';
+      const saldoClass = s > 0 ? 'saldo-red' : 'saldo-ok';
+      return `<tr>
+        <td><strong style="color:#f0a500">${p.id}</strong></td>
+        <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${p.cliente}">${p.cliente}</td>
+        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#888" title="${p.descripcion}">${p.descripcion}</td>
+        <td><span class="estado-badge ${estClass}">${p.estado}</span></td>
+        <td style="white-space:nowrap">${p.fecha_entrega}</td>
+        <td>S/ ${p.monto_total.toFixed(2)}</td>
+        <td style="color:#27ae60">S/ ${p.anticipo_pagado.toFixed(2)}</td>
+        <td class="${saldoClass}">S/ ${s.toFixed(2)}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('pedidos-total').innerHTML =
+      `Total pedidos: <strong style="color:#fff">${data.length}</strong> &nbsp;|&nbsp; Saldo total pendiente: <strong style="color:#e74c3c">S/ ${totalSaldo.toFixed(2)}</strong>`;
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#e74c3c">Error al cargar pedidos</td></tr>';
+  }
+}
+
+// ── Inventario ───────────────────────────────────────────────────────────
+async function loadInventario() {
+  const grid = document.getElementById('inv-grid');
+  grid.innerHTML = '<div style="color:#555;font-size:13px">Cargando...</div>';
+  try {
+    const res  = await apiFetch('/api/inventario');
+    const data = await res.json();
+    grid.innerHTML = Object.values(data).map(m => {
+      const pct  = Math.min(100, Math.round((m.stock / (m.stock_minimo * 3)) * 100));
+      const bajo = m.stock <= m.stock_minimo;
+      return `<div class="inv-card">
+        <h4>${m.nombre} ${bajo ? '<span class="alerta">⚠ Stock bajo</span>' : ''}</h4>
+        <div class="inv-stock ${bajo?'bajo':'ok'}">${m.stock}</div>
+        <div class="inv-unit">${m.unidad}</div>
+        <div class="progress-bar"><div class="progress-fill ${bajo?'fill-bajo':'fill-ok'}" style="width:${pct}%"></div></div>
+        <div class="inv-min">Mínimo: ${m.stock_minimo} ${m.unidad}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<div style="color:#e74c3c;font-size:13px">Error al cargar inventario</div>';
+  }
+}
+
+// ── Precios ───────────────────────────────────────────────────────────────
+async function loadPrecios() {
+  const grid = document.getElementById('precios-grid');
+  if (grid.innerHTML.includes('Cargando')) {
+    try {
+      const res  = await apiFetch('/api/precios');
+      const data = await res.json();
+      const colores = ['pc-rojo','pc-naranja','pc-azul','pc-verde'];
+      grid.innerHTML = Object.values(data).map((p, i) =>
+        `<div class="precio-card ${colores[i%colores.length]}">
+          <h4>${p.descripcion.split('(')[0].trim()}</h4>
+          <div class="monto"><span>S/ </span>${parseFloat(p.precio_unit).toFixed(2)}</div>
+          <div class="desc">${p.descripcion}</div>
+          <div class="min">📦 Mínimo: ${p.minimo}</div>
+        </div>`
+      ).join('') +
+      `<div class="precio-card pc-naranja" style="opacity:0.85">
+        <h4>Recargo urgente</h4>
+        <div class="monto"><span>+</span>30%</div>
+        <div class="desc">Pedido urgente (entrega en 1–2 días hábiles)</div>
+        <div class="min">📦 Aplica sobre el total</div>
+      </div>`;
+    } catch(e) {
+      grid.innerHTML = '<div style="color:#e74c3c;font-size:13px">Error al cargar precios</div>';
+    }
+  }
 }
 
 // ── Chat ──────────────────────────────────────────────────────────────────
-function addMsg(tipo, texto) {
-  const msgs = document.getElementById('messages');
-  const typing = document.getElementById('typing');
-  const div = document.createElement('div');
-  div.className = `msg ${tipo}`;
-  const av  = tipo==='bot' ? '🧵' : '👤';
-  const avClass = tipo==='bot' ? 'bot-av' : 'user-av';
-  div.innerHTML = `<div class="avatar ${avClass}">${av}</div><div class="bubble">${fmt(texto)}</div>`;
-  msgs.insertBefore(div, typing);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
 function fmt(t) {
   return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
            .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-           .replace(/^- (.+)$/gm,'<li>$1</li>')
+           .replace(/^- (.+)$/gm,'<li style="margin-left:16px">$1</li>')
            .replace(/\n/g,'<br>');
 }
-
-async function enviar() {
-  const inp = document.getElementById('input');
-  const msg = inp.value.trim();
-  if (!msg || enviando) return;
-  inp.value = ''; inp.style.height = 'auto';
-  sendMsg(msg);
+function addMsg(tipo, texto) {
+  const msgs = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = `msg ${tipo}`;
+  const avBot = `<img class="av" src="/img/Blogo.png?v=2" alt="IA">`;
+  const avUsr = `<img class="av" src="/img/avatar1.png?v=2" alt="Tú">`;
+  d.innerHTML = tipo==='b'
+    ? `${avBot}<div class="bbl">${fmt(texto)}</div>`
+    : `${avUsr}<div class="bbl">${fmt(texto)}</div>`;
+  msgs.insertBefore(d, document.getElementById('typing'));
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
-async function sendMsg(texto) {
-  if (enviando) return;
-  enviando = true;
-  addMsg('user', texto);
+async function send(texto) {
+  const inp = document.getElementById('inp');
+  const msg = texto || inp.value.trim();
+  if (!msg || busy) return;
+  if (!texto) { inp.value=''; inp.style.height='auto'; }
+  busy = true;
+  addMsg('u', msg);
   document.getElementById('btn-send').disabled = true;
   document.getElementById('typing').classList.add('on');
-
   try {
-    const res  = await fetch('/chat', {
-      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
-      body: JSON.stringify({mensaje:texto, session_id:sessionId})
-    });
+    const res  = await apiFetch('/chat', {method:'POST', headers:{'Content-Type':'application/json'},
+                                          body:JSON.stringify({mensaje:msg, session_id:sessionId})});
     if (res.status===401) { logout(); return; }
-    if (!res.ok) {
-      const e = await res.json();
-      addMsg('bot', '⚠️ Error: ' + (e.detail||res.status));
-      return;
-    }
     const data = await res.json();
-    sessionId  = data.session_id;
-    addMsg('bot', data.respuesta);
-  } catch(e) {
-    addMsg('bot', '⚠️ Sin conexión con el servidor.');
-  } finally {
-    enviando = false;
-    document.getElementById('btn-send').disabled = false;
+    if (!res.ok) { addMsg('b','⚠️ '+(data.detail||'Error')); return; }
+    sessionId = data.session_id;
+    addMsg('b', data.respuesta);
+  } catch(e) { addMsg('b','⚠️ Sin conexión.'); }
+  finally {
+    busy=false; document.getElementById('btn-send').disabled=false;
     document.getElementById('typing').classList.remove('on');
-    document.getElementById('input').focus();
+    document.getElementById('inp').focus();
   }
 }
 
 // ── Factura ──────────────────────────────────────────────────────────────
-function previewFile(input) {
+function previewImg(input) {
   if (!input.files[0]) return;
-  archivoFactura = input.files[0];
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = document.getElementById('preview-img');
-    img.src = e.target.result; img.style.display = 'block';
-    document.getElementById('drop-zone').querySelector('.big').textContent = '✅';
-    document.getElementById('btn-analizar').disabled = false;
+  archivoFact = input.files[0];
+  const r = new FileReader();
+  r.onload = e => {
+    const img = document.getElementById('prev');
+    img.src = e.target.result; img.style.display='block';
+    document.getElementById('btn-analizar').disabled=false;
+    document.getElementById('drop-zone').querySelector('strong').textContent='✅ Imagen lista';
   };
-  reader.readAsDataURL(input.files[0]);
+  r.readAsDataURL(archivoFact);
 }
-
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('drop-zone').classList.remove('over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) {
-    document.getElementById('file-input').files = e.dataTransfer.files;
-    previewFile(document.getElementById('file-input'));
+function onDrop(e) {
+  e.preventDefault(); document.getElementById('drop-zone').classList.remove('ov');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) {
+    const dt = new DataTransfer(); dt.items.add(f);
+    const fi = document.getElementById('fi'); fi.files = dt.files; previewImg(fi);
   }
 }
-
 async function analizarFactura() {
-  if (!archivoFactura) return;
+  if (!archivoFact) return;
   const btn = document.getElementById('btn-analizar');
-  const res_div = document.getElementById('factura-result');
-  btn.disabled = true; btn.textContent = '⏳ Analizando...';
-  res_div.style.display = 'none';
-
+  const res_div = document.getElementById('fact-result');
+  btn.disabled=true; btn.textContent='⏳ Analizando...'; res_div.style.display='none';
   const fd = new FormData();
-  fd.append('imagen', archivoFactura);
-  fd.append('session_id', sessionId || '');
-
+  fd.append('imagen', archivoFact); fd.append('session_id', sessionId||'');
   try {
-    const res  = await fetch('/chat/factura', {
-      method:'POST', headers:{'Authorization':'Bearer '+TOKEN}, body: fd
-    });
+    const res  = await fetch('/chat/factura',{method:'POST',headers:{'Authorization':'Bearer '+TOKEN},body:fd});
     const data = await res.json();
-    if (!res.ok) { res_div.textContent = '⚠️ ' + (data.detail||'Error'); }
-    else { res_div.textContent = data.respuesta; sessionId = data.session_id; }
-    res_div.style.display = 'block';
-  } catch(e) {
-    res_div.textContent = '⚠️ Error de conexión'; res_div.style.display = 'block';
-  } finally {
-    btn.disabled = false; btn.textContent = '🔍 Analizar Factura';
-  }
+    res_div.textContent = res.ok ? data.respuesta : '⚠️ '+(data.detail||'Error');
+    res_div.style.display='block';
+    if (res.ok) sessionId = data.session_id;
+  } catch(e) { res_div.textContent='⚠️ Error de conexión'; res_div.style.display='block'; }
+  finally { btn.disabled=false; btn.textContent='🔍 Analizar Factura'; }
 }
 
-function logout() {
-  localStorage.clear();
-  window.location.href = '/login';
+// ── Utils ─────────────────────────────────────────────────────────────────
+function apiFetch(url, opts={}) {
+  return fetch(url, {...opts, headers:{...(opts.headers||{}), 'Authorization':'Bearer '+TOKEN}});
 }
+function logout() { localStorage.clear(); window.location.href='/login'; }
 </script>
 </body>
 </html>
