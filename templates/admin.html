@@ -6,12 +6,12 @@
 <title>BORDADOS G&C — Admin</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:#0d0d0d;color:#eee;display:flex;height:100vh;overflow:hidden}
+body{font-family:'Segoe UI',sans-serif;background-image:url('/img/backgroundBordados.png?v=2');background-size:cover;background-position:center;color:#eee;display:flex;height:100vh;overflow:hidden}
 
 /* ── SIDEBAR ── */
 .sidebar{width:210px;background:#111;border-right:1px solid #222;display:flex;flex-direction:column;flex-shrink:0}
-.sb-logo{padding:16px 14px;border-bottom:1px solid #222;display:flex;flex-direction:column;align-items:center;gap:8px}
-.sb-logo img.banner{width:100%;max-height:54px;object-fit:contain}
+.sb-logo{padding:16px 14px;background:linear-gradient(135deg,#f0a500,#f0a500); border-bottom:1px solid #222;display:flex;flex-direction:column;align-items:center;gap:8px}
+.sb-logo img.banner{width:100%;max-height:100px;object-fit:contain}
 .nav{flex:1;padding:8px 0}
 .ni{padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:#888;
     transition:all 0.2s;border-left:3px solid transparent;user-select:none}
@@ -29,11 +29,11 @@ body{font-family:'Segoe UI',sans-serif;background:#0d0d0d;color:#eee;display:fle
 
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{padding:12px 20px;background:#111;border-bottom:1px solid #222;display:flex;align-items:center;gap:10px}
-.topbar h3{font-size:14px;font-weight:600;color:#fff}
-.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:#f0a500;color:#000}
-.badge.v{background:#27ae60}
-.topbar-logo{margin-right:auto;height:28px;object-fit:contain}
+.topbar{padding:12px 20px;background:linear-gradient(135deg,#f0a500,#ce8d01df);;border-bottom:1px solid #222;display:flex;align-items:center;gap:10px}
+.topbar h3{font-size:larger;font-weight:600;color:#000000;flex:1}
+.badge{font-size:10px;font-weight:700;padding:6px 16px;border-radius:20px;background:#6c86dddc;color:#ffffff;white-space:nowrap}
+.badge.v{background:#5aa57acf}
+.topbar-logo{height:28px;object-fit:contain}
 
 /* ── TABS CONTENT ── */
 .tab{flex:1;overflow:hidden;display:none;flex-direction:column}
@@ -151,11 +151,11 @@ tbody td{padding:10px 14px;color:#ccc;vertical-align:middle}
     <img class="banner" src="/img/Flogo.png?v=2" alt="BORDADOS G&C" onerror="this.style.display='none'">
   </div>
   <div class="nav">
-    <div class="ni on"  id="ni-chat"      onclick="tab('chat')">      <img src="/img/Blogo.png?v=2" alt="">  Chat IA</div>
-    <div class="ni"     id="ni-pedidos"   onclick="tab('pedidos')">   <img src="/img/Blogo.png?v=2" alt="">  Pedidos</div>
-    <div class="ni"     id="ni-inventario"onclick="tab('inventario')"><img src="/img/Blogo.png?v=2" alt="">  Inventario</div>
-    <div class="ni"     id="ni-precios"   onclick="tab('precios')">   <img src="/img/Blogo.png?v=2" alt="">  Precios</div>
-    <div class="ni"     id="ni-factura"   onclick="tab('factura')">   <img src="/img/Blogo.png?v=2" alt="">  Analizar Factura</div>
+    <div class="ni on"  id="ni-chat"      onclick="tab('chat')">      <img src="/img/Blogo.png?v=2" alt="">  CHAT IA CONSULTAS</div>
+    <div class="ni"     id="ni-pedidos"   onclick="tab('pedidos')">   <img src="/img/Blogo.png?v=2" alt="">  PEDIDOS</div>
+    <div class="ni"     id="ni-inventario"onclick="tab('inventario')"><img src="/img/Blogo.png?v=2" alt="">  INVENTARIO</div>
+    <div class="ni"     id="ni-precios"   onclick="tab('precios')">   <img src="/img/Blogo.png?v=2" alt="">  PRECIOS</div>
+    <div class="ni"     id="ni-factura"   onclick="tab('factura')">   <img src="/img/Blogo.png?v=2" alt="">  ANALIZAR FACTURAS</div>
   </div>
   <div class="sb-user">
     <img src="/img/avatar1.png?v=2" alt="avatar" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><circle cx=%2220%22 cy=%2220%22 r=%2220%22 fill=%22%23f0a500%22/></svg>'">
@@ -170,10 +170,14 @@ tbody td{padding:10px 14px;color:#ccc;vertical-align:middle}
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <img class="topbar-logo" src="/img/Blogo.png?v=2" alt="" style="height:28px;object-fit:contain" onerror="this.style.display='none'">
-    <h3 id="tab-titulo">Chat con Agente IA</h3>
-    <span class="badge">Admin</span>
-    <span class="badge v">● Azure OpenAI</span>
+    <img class="topbar-logo" src="" alt="" style="height:28px;object-fit:contain" onerror="this.style.display='none'">
+    <h3 id="tab-titulo"> SISTEMA DE GESTION DE BORDADOS G&C</h3>
+    <a href="https://www.facebook.com/profile.php?id=61572611130363" target="_blank" style="text-decoration:none">
+      <span class="badge">● FACEBOOK</span>
+    </a>
+    <a href="https://web.whatsapp.com/" target="_blank" style="text-decoration:none">
+      <span class="badge v">● WHATSAPP</span>
+    </a>
   </div>
 
   <!-- TAB CHAT -->
@@ -187,9 +191,9 @@ tbody td{padding:10px 14px;color:#ccc;vertical-align:middle}
     </div>
     <div class="quick">
       <div class="qb" onclick="send('Registra un nuevo pedido para un cliente')">➕ Registrar pedido</div>
-      <div class="qb" onclick="send('¿Qué materiales tienen stock bajo?')">⚠️ Alertas stock</div>
-      <div class="qb" onclick="send('Calcula cotización: 50 polos bordado mediano, urgente')">🧮 Cotizar urgente</div>
-      <div class="qb" onclick="send('Dame un resumen del negocio hoy')">📊 Resumen</div>
+      <div class="qb" onclick="send('¿Qué materiales tienen stock bajo?')">Alertas stock</div>
+      <div class="qb" onclick="send('Calcula cotización: 50 polos bordado mediano, urgente')">Cotizar urgente</div>
+      <div class="qb" onclick="send('Dame un resumen del negocio hoy')">Resumen</div>
     </div>
     <div class="inp-area">
       <textarea id="inp" placeholder="Escribe aquí... (Enter = enviar)"
@@ -234,12 +238,12 @@ tbody td{padding:10px 14px;color:#ccc;vertical-align:middle}
   <div class="tab" id="tab-precios" style="flex-direction:column">
     <div class="panel">
       <div class="panel-header">
-        <h2>💰 Lista de precios</h2>
+        <h2>CATALOGOO DE PRECIOS</h2>
         <span style="font-size:12px;color:#555">50% anticipo · Urgente +30%</span>
       </div>
       <div class="precios-grid" id="precios-grid"><div style="color:#555;font-size:13px">Cargando...</div></div>
       <div style="margin-top:20px;background:#111;border:1px solid #1e1e1e;border-radius:10px;padding:16px">
-        <p style="font-size:12px;color:#888;font-weight:600;margin-bottom:8px">⏰ TIEMPOS DE ENTREGA</p>
+        <p style="font-size:12px;color:#888;font-weight:600;margin-bottom:8px">TIEMPOS DE ENTREGA</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;font-size:12px;color:#666">
           <div>🔹 1–20 piezas: <strong style="color:#aaa">3–5 días</strong></div>
           <div>🔹 21–100 piezas: <strong style="color:#aaa">5–10 días</strong></div>
@@ -264,7 +268,7 @@ tbody td{padding:10px 14px;color:#ccc;vertical-align:middle}
       </div>
       <input type="file" id="fi" accept="image/*" style="display:none" onchange="previewImg(this)">
       <img id="prev" class="preview-img">
-      <button class="btn-analizar" id="btn-analizar" onclick="analizarFactura()" disabled>🔍 Analizar Factura</button>
+      <button class="btn-analizar" id="btn-analizar" onclick="analizarFactura()" disabled>Analizar Factura</button>
       <div class="fact-result" id="fact-result"></div>
     </div>
   </div>
@@ -277,7 +281,7 @@ if (!TOKEN) { window.location.href = '/login'; }
 document.getElementById('sb-nombre').textContent  = NOMBRE;
 document.getElementById('chat-nombre').textContent = NOMBRE;
 
-const TITULOS = {chat:'Chat con Agente IA', pedidos:'Pedidos', inventario:'Inventario', precios:'Precios', factura:'Analizar Factura'};
+const TITULOS = {chat:'GESTION - AGENTE CON IA ', pedidos:'Pedidos', inventario:'Inventario', precios:'Precios', factura:'Analizar Factura'};
 let sessionId = null, busy = false, archivoFact = null;
 
 // ── Tabs ─────────────────────────────────────────────────────────────────
@@ -358,14 +362,14 @@ async function loadPrecios() {
           <h4>${p.descripcion.split('(')[0].trim()}</h4>
           <div class="monto"><span>S/ </span>${parseFloat(p.precio_unit).toFixed(2)}</div>
           <div class="desc">${p.descripcion}</div>
-          <div class="min">📦 Mínimo: ${p.minimo}</div>
+          <div class="min">Mínimo: ${p.minimo}</div>
         </div>`
       ).join('') +
       `<div class="precio-card pc-naranja" style="opacity:0.85">
         <h4>Recargo urgente</h4>
         <div class="monto"><span>+</span>30%</div>
         <div class="desc">Pedido urgente (entrega en 1–2 días hábiles)</div>
-        <div class="min">📦 Aplica sobre el total</div>
+        <div class="min">Aplica sobre el total</div>
       </div>`;
     } catch(e) {
       grid.innerHTML = '<div style="color:#e74c3c;font-size:13px">Error al cargar precios</div>';
@@ -407,10 +411,10 @@ async function send(texto) {
                                           body:JSON.stringify({mensaje:msg, session_id:sessionId})});
     if (res.status===401) { logout(); return; }
     const data = await res.json();
-    if (!res.ok) { addMsg('b','⚠️ '+(data.detail||'Error')); return; }
+    if (!res.ok) { addMsg('b',' '+(data.detail||'Error')); return; }
     sessionId = data.session_id;
     addMsg('b', data.respuesta);
-  } catch(e) { addMsg('b','⚠️ Sin conexión.'); }
+  } catch(e) { addMsg('b','Sin conexión.'); }
   finally {
     busy=false; document.getElementById('btn-send').disabled=false;
     document.getElementById('typing').classList.remove('on');
@@ -427,7 +431,7 @@ function previewImg(input) {
     const img = document.getElementById('prev');
     img.src = e.target.result; img.style.display='block';
     document.getElementById('btn-analizar').disabled=false;
-    document.getElementById('drop-zone').querySelector('strong').textContent='✅ Imagen lista';
+    document.getElementById('drop-zone').querySelector('strong').textContent='Imagen lista';
   };
   r.readAsDataURL(archivoFact);
 }
@@ -443,17 +447,17 @@ async function analizarFactura() {
   if (!archivoFact) return;
   const btn = document.getElementById('btn-analizar');
   const res_div = document.getElementById('fact-result');
-  btn.disabled=true; btn.textContent='⏳ Analizando...'; res_div.style.display='none';
+  btn.disabled=true; btn.textContent='Analizando...'; res_div.style.display='none';
   const fd = new FormData();
   fd.append('imagen', archivoFact); fd.append('session_id', sessionId||'');
   try {
     const res  = await fetch('/chat/factura',{method:'POST',headers:{'Authorization':'Bearer '+TOKEN},body:fd});
     const data = await res.json();
-    res_div.textContent = res.ok ? data.respuesta : '⚠️ '+(data.detail||'Error');
+    res_div.textContent = res.ok ? data.respuesta : ' '+(data.detail||'Error');
     res_div.style.display='block';
     if (res.ok) sessionId = data.session_id;
-  } catch(e) { res_div.textContent='⚠️ Error de conexión'; res_div.style.display='block'; }
-  finally { btn.disabled=false; btn.textContent='🔍 Analizar Factura'; }
+  } catch(e) { res_div.textContent=' Error de conexión'; res_div.style.display='block'; }
+  finally { btn.disabled=false; btn.textContent=' Analizar Factura'; }
 }
 
 // ── Utils ─────────────────────────────────────────────────────────────────
